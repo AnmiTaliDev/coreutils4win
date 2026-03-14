@@ -24,3 +24,22 @@ pub fn dieMsg(msg: []const u8) noreturn {
     std.fs.File.stderr().deprecatedWriter().print("{s}\n", .{msg}) catch {};
     std.process.exit(1);
 }
+
+pub fn argsAlloc(allocator: std.mem.Allocator) ![][]u8 {
+    var list = std.ArrayList([]u8).init(allocator);
+    errdefer {
+        for (list.items) |a| allocator.free(a);
+        list.deinit();
+    }
+    var iter = try std.process.argsWithAllocator(allocator);
+    defer iter.deinit();
+    while (iter.next()) |arg| {
+        try list.append(try allocator.dupe(u8, arg));
+    }
+    return list.toOwnedSlice();
+}
+
+pub fn argsFree(allocator: std.mem.Allocator, args_slice: [][]u8) void {
+    for (args_slice) |a| allocator.free(a);
+    allocator.free(args_slice);
+}

@@ -11,8 +11,8 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const args = try std.process.argsAlloc(allocator);
-    defer std.process.argsFree(allocator, args);
+    const args = try common.argsAlloc(allocator);
+    defer common.argsFree(allocator, args);
 
     var zero = false;
     var i: usize = 1;

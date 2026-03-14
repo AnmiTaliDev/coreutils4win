@@ -10,8 +10,8 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const args = try std.process.argsAlloc(allocator);
-    defer std.process.argsFree(allocator, args);
+    const args = try common.argsAlloc(allocator);
+    defer common.argsFree(allocator, args);
 
     for (args[1..]) |arg| {
         if (std.mem.eql(u8, arg, "--help")) {
