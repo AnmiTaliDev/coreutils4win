@@ -8,7 +8,7 @@ const Options = @import("options.zig").Options;
 const remove_mod = @import("remove.zig");
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa = std.heap.DebugAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
