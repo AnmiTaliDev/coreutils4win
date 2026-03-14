@@ -26,17 +26,17 @@ pub fn dieMsg(msg: []const u8) noreturn {
 }
 
 pub fn argsAlloc(allocator: std.mem.Allocator) ![][]u8 {
-    var list: std.ArrayList([]u8) = .{ .allocator = allocator };
+    var list: std.ArrayListUnmanaged([]u8) = .{};
     errdefer {
         for (list.items) |a| allocator.free(a);
-        list.deinit();
+        list.deinit(allocator);
     }
     var iter = try std.process.argsWithAllocator(allocator);
     defer iter.deinit();
     while (iter.next()) |arg| {
-        try list.append(try allocator.dupe(u8, arg));
+        try list.append(allocator, try allocator.dupe(u8, arg));
     }
-    return list.toOwnedSlice();
+    return list.toOwnedSlice(allocator);
 }
 
 pub fn argsFree(allocator: std.mem.Allocator, args_slice: [][]u8) void {
