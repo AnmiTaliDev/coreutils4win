@@ -26,7 +26,7 @@ pub fn dieMsg(msg: []const u8) noreturn {
 }
 
 pub fn argsAlloc(allocator: std.mem.Allocator) ![][]u8 {
-    var list = std.ArrayList([]u8).init(allocator);
+    var list: std.ArrayList([]u8) = .{ .allocator = allocator };
     errdefer {
         for (list.items) |a| allocator.free(a);
         list.deinit();
