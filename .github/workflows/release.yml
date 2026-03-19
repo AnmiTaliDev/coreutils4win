@@ -64,6 +64,7 @@ jobs:
 
       - name: Build Inno Setup installer
         run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
           $ver = "${{ github.ref_name }}".TrimStart('v')
           iscc "installer\setup.iss" /DAppVersion=$ver
         shell: pwsh
@@ -80,8 +81,11 @@ jobs:
         shell: pwsh
 
       - name: Upload installers to release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/coreutils4win-*-setup.exe
-            dist/coreutils4win-${{ github.ref_name }}.msi
+        run: |
+          gh release upload ${{ github.ref_name }} `
+            dist\coreutils4win-*-setup.exe `
+            dist\coreutils4win-${{ github.ref_name }}.msi `
+            --clobber
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
