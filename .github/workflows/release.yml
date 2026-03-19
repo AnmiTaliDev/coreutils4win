@@ -72,11 +72,9 @@ jobs:
       - name: Build MSI (WiX)
         run: |
           dotnet tool install --global wix
-          wix extension add WixToolset.UI.wixext
           $ver = "${{ github.ref_name }}".TrimStart('v')
           wix build installer\setup.wxs `
             -d AppVersion=$ver `
-            -ext WixToolset.UI.wixext `
             -o dist\coreutils4win-${{ github.ref_name }}.msi
         shell: pwsh
 

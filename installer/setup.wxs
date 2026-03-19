@@ -60,8 +60,6 @@
       <ComponentRef Id="PathEnv" />
     </Feature>
 
-    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-    <UIRef Id="WixUI_Minimal" />
 
   </Package>
 </Wix>
