@@ -71,6 +71,7 @@ jobs:
       - name: Build MSI (WiX)
         run: |
           dotnet tool install --global wix
+          wix extension add WixToolset.UI.wixext
           $ver = "${{ github.ref_name }}".TrimStart('v')
           wix build installer\setup.wxs `
             -d AppVersion=$ver `
