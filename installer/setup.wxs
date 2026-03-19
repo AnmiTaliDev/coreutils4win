@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AnmiTaliDev CoreUtils4Win - WiX v4 MSI Installer
+  Copyright (C) 2026 AnmiTaliDev
+  Licensed under the Apache License, Version 2.0
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="AnmiTaliDev CoreUtils4Win"
+    Version="$(var.AppVersion)"
+    Manufacturer="AnmiTaliDev"
+    UpgradeCode="4A8B3C2D-1E5F-4A6B-8C9D-0E1F2A3B4C5D"
+    Scope="perMachine">
+
+    <SummaryInformation Description="GNU coreutils for Windows" Keywords="coreutils windows" />
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="CoreUtils4Win" />
+    </StandardDirectory>
+
+    <ComponentGroup Id="BinFiles" Directory="INSTALLFOLDER">
+      <Component Id="basename_exe"><File Source="..\zig-out\bin\basename.exe" /></Component>
+      <Component Id="cat_exe"><File Source="..\zig-out\bin\cat.exe" /></Component>
+      <Component Id="cp_exe"><File Source="..\zig-out\bin\cp.exe" /></Component>
+      <Component Id="dirname_exe"><File Source="..\zig-out\bin\dirname.exe" /></Component>
+      <Component Id="echo_exe"><File Source="..\zig-out\bin\echo.exe" /></Component>
+      <Component Id="false_exe"><File Source="..\zig-out\bin\false.exe" /></Component>
+      <Component Id="head_exe"><File Source="..\zig-out\bin\head.exe" /></Component>
+      <Component Id="ls_exe"><File Source="..\zig-out\bin\ls.exe" /></Component>
+      <Component Id="mkdir_exe"><File Source="..\zig-out\bin\mkdir.exe" /></Component>
+      <Component Id="mv_exe"><File Source="..\zig-out\bin\mv.exe" /></Component>
+      <Component Id="pwd_exe"><File Source="..\zig-out\bin\pwd.exe" /></Component>
+      <Component Id="rm_exe"><File Source="..\zig-out\bin\rm.exe" /></Component>
+      <Component Id="rmdir_exe"><File Source="..\zig-out\bin\rmdir.exe" /></Component>
+      <Component Id="tail_exe"><File Source="..\zig-out\bin\tail.exe" /></Component>
+      <Component Id="touch_exe"><File Source="..\zig-out\bin\touch.exe" /></Component>
+      <Component Id="true_exe"><File Source="..\zig-out\bin\true.exe" /></Component>
+      <Component Id="uname_exe"><File Source="..\zig-out\bin\uname.exe" /></Component>
+      <Component Id="whoami_exe"><File Source="..\zig-out\bin\whoami.exe" /></Component>
+    </ComponentGroup>
+
+    <Component Id="PathEnv" Directory="INSTALLFOLDER" Guid="5B9C4D3E-2F6A-4B7C-9D0E-1F2A3B4C5D6E">
+      <Environment
+        Id="PATH"
+        Name="PATH"
+        Value="[INSTALLFOLDER]"
+        Permanent="no"
+        Part="last"
+        Action="set"
+        System="yes" />
+    </Component>
+
+    <Feature Id="Main" Title="CoreUtils4Win" Level="1">
+      <ComponentGroupRef Id="BinFiles" />
+      <ComponentRef Id="PathEnv" />
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    <UIRef Id="WixUI_Minimal" />
+
+  </Package>
+</Wix>

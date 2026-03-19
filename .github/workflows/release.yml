@@ -20,7 +20,7 @@ jobs:
       - name: Install Zig
         uses: mlugg/setup-zig@v2
         with:
-          version: master
+          version: 0.15.2
 
       - name: Build all utilities
         run: zig build -Doptimize=ReleaseSafe
@@ -32,6 +32,12 @@ jobs:
           cd dist
           zip -r ../coreutils4win-${{ github.ref_name }}.zip .
 
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: executables
+          path: zig-out/bin/*.exe
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -40,3 +46,41 @@ jobs:
           prerelease: ${{ contains(github.ref_name, '-') }}
           generate_release_notes: true
           files: coreutils4win-${{ github.ref_name }}.zip
+
+  build-installers:
+    name: Build Installers
+    needs: build-and-release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download executables
+        uses: actions/download-artifact@v4
+        with:
+          name: executables
+          path: zig-out/bin
+
+      - name: Build Inno Setup installer
+        run: |
+          $ver = "${{ github.ref_name }}".TrimStart('v')
+          iscc "installer\setup.iss" /DAppVersion=$ver
+        shell: pwsh
+
+      - name: Build MSI (WiX)
+        run: |
+          dotnet tool install --global wix
+          $ver = "${{ github.ref_name }}".TrimStart('v')
+          wix build installer\setup.wxs `
+            -d AppVersion=$ver `
+            -ext WixToolset.UI.wixext `
+            -o dist\coreutils4win-${{ github.ref_name }}.msi
+        shell: pwsh
+
+      - name: Upload installers to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/coreutils4win-*-setup.exe
+            dist/coreutils4win-${{ github.ref_name }}.msi
