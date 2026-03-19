@@ -70,7 +70,7 @@ begin
     if P > 0 then
     begin
       NewPath := Copy(Path, 1, P - 1) + Copy(Path, P + Length(Dir) + 1, MaxInt);
-      RegWriteExpandStrValue(HKLM,
+      RegWriteStringValue(HKLM,
         'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
         'Path', NewPath);
     end;
